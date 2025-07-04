@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styles from './UserProfileForm.module.css';
-import { UserProfileProvider, useUserProfile } from './context/UserProfileContext';
+import { useUserProfile } from './context/UserProfileContext';
 import StepOne from './StepOne';
 import StepTwo from './StepTwo';
 import StepButtons from './StepButtons';
@@ -15,41 +15,45 @@ const initialData = {
 };
 
 const validate = (state: typeof initialData) => {
-  const errors: Partial<typeof initialData> = {};
-  if (!state.name.trim()) errors.name = 'Name is required.';
-  if (!state.email.trim()) errors.email = 'Email is required.';
-  else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(state.email)) errors.email = 'Invalid email address.';
-  if (!state.bio.trim()) errors.bio = 'Bio is required.';
-  // theme and newsletter are always valid
-  return errors;
+  const temporaryErrors: Partial<typeof initialData> = {};
+  if (!state.name.trim()) temporaryErrors.name = 'Name is required.';
+  if (!state.email.trim()) temporaryErrors.email = 'Email is required.';
+  else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(state.email)) temporaryErrors.email = 'Invalid email address.';
+  if (!state.bio.trim()) temporaryErrors.bio = 'Bio is required.';
+  // return error object which gets passed into 
+  return temporaryErrors;
 };
 
 const UserProfileForm: React.FC = () => {
+  // global state from our context 
   const { state } = useUserProfile();
-  const [errors, setErrors] = useState<Partial<typeof initialData>>({});
+  // local state
+  const [validationErrors, setValidationErrors] = useState<Partial<typeof initialData>>({});
   const [dirty, setDirty] = useState(false);
   const [saving, setSaving] = useState(false);
   const [success, setSuccess] = useState(false);
   const [step, setStep] = useState(0);
 
-  // Validate on state change
+  // Validate on global state change
   useEffect(() => {
-    setErrors(validate(state));
+    setValidationErrors(validate(state));
     setDirty(JSON.stringify(state) !== JSON.stringify(initialData));
     setSuccess(false);
   }, [state]);
 
-  const isValid = Object.keys(errors).length === 0;
+  // Check if there are no validation errors
+  const isValid = Object.keys(validationErrors).length === 0;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    // If there are validation errors or form is not dirty, do not submit
     if (!isValid || !dirty) return;
     // if no errors the proceed to submitting form
     setSaving(true);
     setTimeout(() => {
       setSaving(false);
       setSuccess(true);
-    }, 1200); // Simulate API call
+    }, 1500); // Simulate API call
   };
 
   const next = () => setStep((s) => s + 1);
@@ -57,7 +61,7 @@ const UserProfileForm: React.FC = () => {
 
   return (
     <form className={styles.form} onSubmit={handleSubmit} noValidate>
-      {step === 0 && <StepOne errors={errors} />}
+      {step === 0 && <StepOne validationErrors={validationErrors} />}
       {step === 1 && <StepTwo />}
       {step !== 0 && <StepButtons step={step} next={next} prev={prev} />}
       <div className={styles.buttonGroup}>

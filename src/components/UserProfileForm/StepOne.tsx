@@ -7,18 +7,18 @@ import ReceiveNewsletterField from './fields/ReceiveNewsletterField';
 
 // Use a local type for errors prop
 interface StepOneProps {
-  errors?: {
+  validationErrors?: {
     name?: string;
     email?: string;
     bio?: string;
   };
 }
 
-const StepOne: React.FC<StepOneProps> = ({ errors = {} }) => (
+const StepOne: React.FC<StepOneProps> = ({ validationErrors = {} }) => (
   <>
-    <NameField error={errors.name} />
-    <EmailField error={errors.email} />
-    <BioField error={errors.bio} />
+    <NameField error={validationErrors.name} />
+    <EmailField error={validationErrors.email} />
+    <BioField error={validationErrors.bio} />
     <PreferredThemeField />
     <ReceiveNewsletterField />
   </>
