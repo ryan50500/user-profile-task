@@ -16,8 +16,9 @@ This project is a Vite + React + TypeScript starter for the User Profile Setting
 ## Project Structure
 - `src/components/` – Components
 - `src/context/` – React Context API logic
+- `src/context/` – React Context API logic
+
 
 ## Notes
-## Notes
-## Notes
+
 - This project uses React Context API for state management.
