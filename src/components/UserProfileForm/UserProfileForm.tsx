@@ -15,12 +15,14 @@ const initialData = {
 };
 
 const validate = (state: typeof initialData) => {
+  // set a temporary error object to store validation errors
   const temporaryErrors: Partial<typeof initialData> = {};
+  // add validation errors to the temporaryErrors object
   if (!state.name.trim()) temporaryErrors.name = 'Name is required.';
   if (!state.email.trim()) temporaryErrors.email = 'Email is required.';
   else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(state.email)) temporaryErrors.email = 'Invalid email address.';
   if (!state.bio.trim()) temporaryErrors.bio = 'Bio is required.';
-  // return error object which gets passed into 
+  // return temporary error object
   return temporaryErrors;
 };
 
@@ -34,8 +36,8 @@ const UserProfileForm: React.FC = () => {
   const [success, setSuccess] = useState(false);
   const [step, setStep] = useState(0);
 
-  // Validate on global state change
   useEffect(() => {
+    // pass in temporary error object to setValidationErrors
     setValidationErrors(validate(state));
     setDirty(JSON.stringify(state) !== JSON.stringify(initialData));
     setSuccess(false);
