@@ -18,18 +18,19 @@ const validate = (state: typeof initialData) => {
   const errors: Partial<typeof initialData> = {};
   if (!state.name.trim()) errors.name = 'Name is required.';
   if (!state.email.trim()) errors.email = 'Email is required.';
-  else if (!/^\S+@\S+\.\S+$/.test(state.email)) errors.email = 'Invalid email address.';
+  else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(state.email)) errors.email = 'Invalid email address.';
   if (!state.bio.trim()) errors.bio = 'Bio is required.';
   // theme and newsletter are always valid
   return errors;
 };
 
-const UserProfileFormInner: React.FC = () => {
+const UserProfileForm: React.FC = () => {
   const { state } = useUserProfile();
   const [errors, setErrors] = useState<Partial<typeof initialData>>({});
   const [dirty, setDirty] = useState(false);
   const [saving, setSaving] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [step, setStep] = useState(0);
 
   // Validate on state change
   useEffect(() => {
@@ -43,14 +44,13 @@ const UserProfileFormInner: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!isValid || !dirty) return;
+    // if no errors the proceed to submitting form
     setSaving(true);
     setTimeout(() => {
       setSaving(false);
       setSuccess(true);
     }, 1200); // Simulate API call
   };
-
-  const [step, setStep] = useState(0);
 
   const next = () => setStep((s) => s + 1);
   const prev = () => setStep((s) => s - 1);
@@ -69,11 +69,5 @@ const UserProfileFormInner: React.FC = () => {
     </form>
   );
 };
-
-const UserProfileForm: React.FC = () => (
-  <UserProfileProvider>
-    <UserProfileFormInner />
-  </UserProfileProvider>
-);
 
 export default UserProfileForm;
