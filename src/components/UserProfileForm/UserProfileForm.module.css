@@ -75,3 +75,8 @@ button {
 button:hover {
   background: #4f46e5;
 }
+
+.successMsg {
+  color: green;
+  font-weight: 600;
+}
