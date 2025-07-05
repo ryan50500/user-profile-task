@@ -1,8 +1,7 @@
 import React, { useEffect } from 'react';
 import styles from './UserProfileForm.module.css';
 import { useUserProfile } from './context/UserProfileContext';
-import StepOne from './StepOne';
-import StepTwo from './StepTwo';
+import FormStep from './FormStep';
 import FormStepper from './FormStepper';
 import FormSaveButton from './FormSaveButton';
 import FormSuccessMessage from './FormSuccessMessage';
@@ -101,11 +100,8 @@ const UserProfileForm: React.FC = () => {
 
   return (
     <form className={styles.form} onSubmit={handleSubmit} noValidate>
-      {formState.step === 0 && <StepOne validationErrors={formState.validationErrors} />}
-      {formState.step === 1 && <StepTwo />}
-      {formState.step !== 0 && (
-        <FormStepper step={formState.step} dispatchForm={dispatchForm} />
-      )}
+      <FormStep step={formState.step} validationErrors={formState.validationErrors} />
+      {/* <FormStepper step={formState.step} dispatchForm={dispatchForm} /> */}
       <FormSaveButton isValid={isValid} dirty={formState.dirty} saving={formState.saving} />
       <FormSuccessMessage show={formState.success} />
     </form>
