@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import styles from './UserProfileForm.module.css';
 import { useUserProfile } from './context/UserProfileContext';
 import StepOne from './StepOne';
@@ -14,7 +14,51 @@ const initialData = {
   newsletter: false,
 };
 
-const validate = (state: typeof initialData) => {
+// Local form state type
+interface FormState {
+  validationErrors: Partial<typeof initialData>;
+  dirty: boolean;
+  saving: boolean;
+  success: boolean;
+  step: number;
+}
+
+type FormAction =
+  | { type: 'SET_VALIDATION_ERRORS'; payload: Partial<typeof initialData> }
+  | { type: 'SET_DIRTY'; payload: boolean }
+  | { type: 'SET_SAVING'; payload: boolean }
+  | { type: 'SET_SUCCESS'; payload: boolean }
+  | { type: 'SET_STEP'; payload: number }
+  | { type: 'RESET_FORM' };
+
+const initialFormState: FormState = {
+  validationErrors: {},
+  dirty: false,
+  saving: false,
+  success: false,
+  step: 0,
+};
+
+function formReducer(state: FormState, action: FormAction): FormState {
+  switch (action.type) {
+    case 'SET_VALIDATION_ERRORS':
+      return { ...state, validationErrors: action.payload };
+    case 'SET_DIRTY':
+      return { ...state, dirty: action.payload };
+    case 'SET_SAVING':
+      return { ...state, saving: action.payload };
+    case 'SET_SUCCESS':
+      return { ...state, success: action.payload };
+    case 'SET_STEP':
+      return { ...state, step: action.payload };
+    case 'RESET_FORM':
+      return { ...initialFormState };
+    default:
+      return state;
+  }
+}
+
+const validateForm = (state: typeof initialData) => {
   // set a temporary error object to store validation errors
   const temporaryErrors: Partial<typeof initialData> = {};
   // add validation errors to the temporaryErrors object
@@ -29,49 +73,44 @@ const validate = (state: typeof initialData) => {
 const UserProfileForm: React.FC = () => {
   // global state from our context 
   const { state } = useUserProfile();
-  // local state
-  const [validationErrors, setValidationErrors] = useState<Partial<typeof initialData>>({});
-  const [dirty, setDirty] = useState(false);
-  const [saving, setSaving] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [step, setStep] = useState(0);
+  // local state with useReducer
+  const [formState, dispatchForm] = React.useReducer(formReducer, initialFormState);
 
   useEffect(() => {
-    // pass in temporary error object to setValidationErrors
-    setValidationErrors(validate(state));
-    setDirty(JSON.stringify(state) !== JSON.stringify(initialData));
-    setSuccess(false);
+    dispatchForm({ type: 'SET_VALIDATION_ERRORS', payload: validateForm(state) });
+    dispatchForm({ type: 'SET_DIRTY', payload: JSON.stringify(state) !== JSON.stringify(initialData) });
+    dispatchForm({ type: 'SET_SUCCESS', payload: false });
   }, [state]);
 
   // Check if there are no validation errors
-  const isValid = Object.keys(validationErrors).length === 0;
+  const isValid = Object.keys(formState.validationErrors).length === 0;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // If there are validation errors or form is not dirty, do not submit
-    if (!isValid || !dirty) return;
+    if (!isValid || !formState.dirty) return;
     // if no errors the proceed to submitting form
-    setSaving(true);
+    dispatchForm({ type: 'SET_SAVING', payload: true });
     setTimeout(() => {
-      setSaving(false);
-      setSuccess(true);
+      dispatchForm({ type: 'SET_SAVING', payload: false });
+      dispatchForm({ type: 'SET_SUCCESS', payload: true });
     }, 1500); // Simulate API call
   };
 
-  const next = () => setStep((s) => s + 1);
-  const prev = () => setStep((s) => s - 1);
+  const next = () => dispatchForm({ type: 'SET_STEP', payload: formState.step + 1 });
+  const prev = () => dispatchForm({ type: 'SET_STEP', payload: formState.step - 1 });
 
   return (
     <form className={styles.form} onSubmit={handleSubmit} noValidate>
-      {step === 0 && <StepOne validationErrors={validationErrors} />}
-      {step === 1 && <StepTwo />}
-      {step !== 0 && <StepButtons step={step} next={next} prev={prev} />}
+      {formState.step === 0 && <StepOne validationErrors={formState.validationErrors} />}
+      {formState.step === 1 && <StepTwo />}
+      {formState.step !== 0 && <StepButtons step={formState.step} next={next} prev={prev} />}
       <div className={styles.buttonGroup}>
-        <button type="submit" disabled={!isValid || !dirty || saving}>
-          {saving ? 'Saving...' : 'Save Changes'}
+        <button type="submit" disabled={!isValid || !formState.dirty || formState.saving}>
+          {formState.saving ? 'Saving...' : 'Save Changes'}
         </button>
       </div>
-      {success && <div className={styles.successMsg}>Profile updated successfully!</div>}
+      {formState.success && <div className={styles.successMsg}>Profile updated successfully!</div>}
     </form>
   );
 };
