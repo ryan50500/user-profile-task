@@ -18,7 +18,6 @@ const initialData = {
 // Local form state type
 interface FormState {
   validationErrors: Partial<typeof initialData>;
-  dirty: boolean;
   saving: boolean;
   success: boolean;
   step: number;
@@ -26,7 +25,6 @@ interface FormState {
 
 export type FormAction =
   | { type: 'SET_VALIDATION_ERRORS'; payload: Partial<typeof initialData> }
-  | { type: 'SET_DIRTY'; payload: boolean }
   | { type: 'SET_SAVING'; payload: boolean }
   | { type: 'SET_SUCCESS'; payload: boolean }
   | { type: 'SET_STEP'; payload: number }
@@ -34,7 +32,6 @@ export type FormAction =
 
 const initialFormState: FormState = {
   validationErrors: {},
-  dirty: false,
   saving: false,
   success: false,
   step: 0,
@@ -44,8 +41,6 @@ function formReducer(state: FormState, action: FormAction): FormState {
   switch (action.type) {
     case 'SET_VALIDATION_ERRORS':
       return { ...state, validationErrors: action.payload };
-    case 'SET_DIRTY':
-      return { ...state, dirty: action.payload };
     case 'SET_SAVING':
       return { ...state, saving: action.payload };
     case 'SET_SUCCESS':
@@ -72,37 +67,75 @@ const validateForm = (state: typeof initialData) => {
 };
 
 const UserProfileForm: React.FC = () => {
-  // global state from our context 
-  const { state } = useUserProfile();
-  // local state with useReducer
+  const { state, dispatch } = useUserProfile();
   const [formState, dispatchForm] = React.useReducer(formReducer, initialFormState);
+  const [loadedData, setLoadedData] = React.useState<typeof initialData | null>(null);
+  const [loading, setLoading] = React.useState(true);
+  const [fetchError, setFetchError] = React.useState<string | null>(null);
 
+  // Fetch initial data from json-server
+  useEffect(() => {
+    setLoading(true);
+    setFetchError(null);
+    fetch('http://localhost:3001/userProfile')
+      .then(res => {
+        if (!res.ok) throw new Error('Failed to fetch user profile');
+        return res.json();
+      })
+      .then(data => {
+        setLoadedData(data);
+        // Set context/global state to loaded data (type-safe)
+        if (typeof data.name === 'string') {
+          dispatch({ type: 'SET_NAME', payload: data.name });
+        }
+        if (typeof data.email === 'string') {
+          dispatch({ type: 'SET_EMAIL', payload: data.email });
+        }
+        if (typeof data.bio === 'string') {
+          dispatch({ type: 'SET_BIO', payload: data.bio });
+        }
+        if (typeof data.theme === 'string') {
+          dispatch({ type: 'SET_THEME', payload: data.theme });
+        }
+        if (typeof data.newsletter === 'boolean') {
+          dispatch({ type: 'SET_NEWSLETTER', payload: data.newsletter });
+        }
+        setLoading(false);
+      })
+      .catch(err => {
+        setFetchError(err.message);
+        setLoading(false);
+      });
+  }, [dispatch]);
+
+  // Validation
   useEffect(() => {
     dispatchForm({ type: 'SET_VALIDATION_ERRORS', payload: validateForm(state) });
-    dispatchForm({ type: 'SET_DIRTY', payload: JSON.stringify(state) !== JSON.stringify(initialData) });
     dispatchForm({ type: 'SET_SUCCESS', payload: false });
   }, [state]);
 
-  // Check if there are no validation errors
+  // Dirty check: compare state to loadedData
+  const dirty = loadedData ? JSON.stringify(state) !== JSON.stringify(loadedData) : false;
   const isValid = Object.keys(formState.validationErrors).length === 0;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // If there are validation errors or form is not dirty, do not submit
-    if (!isValid || !formState.dirty) return;
-    // if no errors the proceed to submitting form
+    if (!isValid || !dirty) return;
     dispatchForm({ type: 'SET_SAVING', payload: true });
     setTimeout(() => {
       dispatchForm({ type: 'SET_SAVING', payload: false });
       dispatchForm({ type: 'SET_SUCCESS', payload: true });
-    }, 1500); // Simulate API call
+    }, 1500);
   };
+
+  if (loading) return <div>Loading...</div>;
+  if (fetchError) return <div style={{ color: 'red' }}>{fetchError}</div>;
 
   return (
     <form className={styles.form} onSubmit={handleSubmit} noValidate>
       <FormStep step={formState.step} validationErrors={formState.validationErrors} />
-      {/* <FormStepper step={formState.step} dispatchForm={dispatchForm} /> */}
-      <FormSaveButton isValid={isValid} dirty={formState.dirty} saving={formState.saving} />
+      <FormStepper step={formState.step} dispatchForm={dispatchForm} />
+      <FormSaveButton isValid={isValid} dirty={dirty} saving={formState.saving} />
       <FormSuccessMessage show={formState.success} />
     </form>
   );

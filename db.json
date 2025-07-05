@@ -1,0 +1,9 @@
+{
+  "userProfile": {
+    "name": "Jane Doe",
+    "email": "jane@example.com",
+    "bio": "Hello world!",
+    "theme": "dark",
+    "newsletter": true
+  }
+}
