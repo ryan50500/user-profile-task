@@ -1,26 +1,26 @@
 import React from 'react';
+import type { FormAction } from './UserProfileForm';
 import styles from './UserProfileForm.module.css';
 
-type StepButtonsProps = {
+interface StepButtonsProps {
   step: number;
-  next: () => void;
-  prev: () => void;
-};
+  dispatchForm: React.Dispatch<FormAction>;
+}
 
-const StepButtons: React.FC<StepButtonsProps> = ({ step, next, prev }) => (
-  <div className={styles.buttonGroup}>
-    {step > 0 && (
-      <button type="button" onClick={prev}>
+const StepButtons: React.FC<StepButtonsProps> = ({ step, dispatchForm }) => {
+  const next = () => dispatchForm({ type: 'SET_STEP', payload: step + 1 });
+  const prev = () => dispatchForm({ type: 'SET_STEP', payload: step - 1 });
+
+  return (
+    <div className={styles.buttonGroup}>
+      <button type="button" onClick={prev} disabled={step === 0}>
         Back
       </button>
-    )}
-    {step < 1 && (
       <button type="button" onClick={next}>
-        Next
+        {step < 1 ? 'Next' : 'Save'}
       </button>
-    )}
-    {step === 1 && <button type="submit">Save</button>}
-  </div>
-);
+    </div>
+  );
+};
 
 export default StepButtons;

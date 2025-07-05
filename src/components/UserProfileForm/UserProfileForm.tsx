@@ -3,7 +3,9 @@ import styles from './UserProfileForm.module.css';
 import { useUserProfile } from './context/UserProfileContext';
 import StepOne from './StepOne';
 import StepTwo from './StepTwo';
-import StepButtons from './StepButtons';
+import FormStepper from './FormStepper';
+import FormSaveButton from './FormSaveButton';
+import FormSuccessMessage from './FormSuccessMessage';
 
 // Initial data for dirty check (simulate loaded data)
 const initialData = {
@@ -23,7 +25,7 @@ interface FormState {
   step: number;
 }
 
-type FormAction =
+export type FormAction =
   | { type: 'SET_VALIDATION_ERRORS'; payload: Partial<typeof initialData> }
   | { type: 'SET_DIRTY'; payload: boolean }
   | { type: 'SET_SAVING'; payload: boolean }
@@ -97,20 +99,15 @@ const UserProfileForm: React.FC = () => {
     }, 1500); // Simulate API call
   };
 
-  const next = () => dispatchForm({ type: 'SET_STEP', payload: formState.step + 1 });
-  const prev = () => dispatchForm({ type: 'SET_STEP', payload: formState.step - 1 });
-
   return (
     <form className={styles.form} onSubmit={handleSubmit} noValidate>
       {formState.step === 0 && <StepOne validationErrors={formState.validationErrors} />}
       {formState.step === 1 && <StepTwo />}
-      {formState.step !== 0 && <StepButtons step={formState.step} next={next} prev={prev} />}
-      <div className={styles.buttonGroup}>
-        <button type="submit" disabled={!isValid || !formState.dirty || formState.saving}>
-          {formState.saving ? 'Saving...' : 'Save Changes'}
-        </button>
-      </div>
-      {formState.success && <div className={styles.successMsg}>Profile updated successfully!</div>}
+      {formState.step !== 0 && (
+        <FormStepper step={formState.step} dispatchForm={dispatchForm} />
+      )}
+      <FormSaveButton isValid={isValid} dirty={formState.dirty} saving={formState.saving} />
+      <FormSuccessMessage show={formState.success} />
     </form>
   );
 };
