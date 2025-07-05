@@ -68,6 +68,9 @@ const validateForm = (state: typeof initialData) => {
 
 const UserProfileForm: React.FC = () => {
   const { state, dispatch } = useUserProfile();
+  // is initialFormState coming from the state in formReducer??? and what exactly is the state in formReducer reffering to???
+  // is initialFormState coming from the state in formReducer??? and what exactly is the state in formReducer reffering to???
+  // is initialFormState coming from the state in formReducer??? and what exactly is the state in formReducer reffering to???
   const [formState, dispatchForm] = React.useReducer(formReducer, initialFormState);
   const [loadedData, setLoadedData] = React.useState<typeof initialData | null>(null);
   const [loading, setLoading] = React.useState(true);
@@ -114,7 +117,7 @@ const UserProfileForm: React.FC = () => {
     dispatchForm({ type: 'SET_SUCCESS', payload: false });
   }, [state]);
 
-  // Dirty check: compare state to loadedData
+
   const dirty = loadedData ? JSON.stringify(state) !== JSON.stringify(loadedData) : false;
   const isValid = Object.keys(formState.validationErrors).length === 0;
 
