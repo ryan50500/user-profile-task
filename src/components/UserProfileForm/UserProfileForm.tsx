@@ -14,8 +14,8 @@ import { fetchReducer, initialFetchState } from './reducers/fetchReducer';
 import { validateForm } from './validation';
 
 const UserProfileForm: React.FC = () => {
-   // `state` here refers to the global context state of User Profile Form
-  const { state, dispatch } = useUserProfile();
+   // `state` refers to the global context of User Profile Form
+  const { state: userProfileState, dispatch } = useUserProfile();
   const [formState, dispatchForm] = React.useReducer(formReducer, initialFormState);
   const [fetchState, dispatchFetch] = React.useReducer(fetchReducer, initialFetchState);
 
@@ -56,13 +56,14 @@ const UserProfileForm: React.FC = () => {
 
   // Validation
   useEffect(() => {
-    dispatchForm({ type: 'SET_VALIDATION_ERRORS', payload: validateForm(state) }); // `state` is from the global context
+    const formErrors = validateForm(userProfileState); 
+    dispatchForm({ type: 'SET_VALIDATION_ERRORS', payload: formErrors });
     dispatchForm({ type: 'SET_SUCCESS', payload: false });
-  }, [state]);
+  }, [userProfileState]);
 
   // Helper function to check if the form is dirty
   const isFormDirty = (): boolean => {
-    return !!fetchState.loadedData && JSON.stringify(state) !== JSON.stringify(fetchState.loadedData);
+    return !!fetchState.loadedData && JSON.stringify(userProfileState) !== JSON.stringify(fetchState.loadedData);
   };
 
   // Helper function to check if the form is valid

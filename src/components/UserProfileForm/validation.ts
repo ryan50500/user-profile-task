@@ -4,20 +4,19 @@
 import { UserProfileState } from './context/UserProfileContext';
 
 export function validateForm(state: UserProfileState): Partial<UserProfileState> {
-  const temporaryErrors: Partial<UserProfileState> = {}; // Object to store validation errors
+    // Object to store validation errors
+  const temporaryErrors: Partial<UserProfileState> = {}; 
 
-  // Validate the name field
   // - Name is required and cannot be empty
   if (!state.name.trim()) temporaryErrors.name = 'Name is required.';
 
-  // Validate the email field
   // - Email is required and must follow a valid email format
   if (!state.email.trim()) temporaryErrors.email = 'Email is required.';
   else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(state.email)) temporaryErrors.email = 'Invalid email address.';
 
-  // Validate the bio field
   // - Bio is required and cannot be empty
   if (!state.bio.trim()) temporaryErrors.bio = 'Bio is required.';
 
-  return temporaryErrors; // Return the validation errors
+//   Return any validation errors
+  return temporaryErrors;
 }
