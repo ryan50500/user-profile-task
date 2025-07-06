@@ -1,5 +1,5 @@
 import React from 'react';
-import type { FormAction } from './UserProfileForm';
+import { FormAction } from './UserProfileForm';
 
 interface FormStepperProps {
   step: number;

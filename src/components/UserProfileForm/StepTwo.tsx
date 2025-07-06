@@ -1,9 +1,8 @@
 import React from 'react';
 
 const StepTwo: React.FC = () => {
-  return <h2>This is Step Two!</h2>;
+  return <h2>Dummy component for multi-step form</h2>;
 };
 
 export default StepTwo;
 
-// PUT DUMMY CODE HERE TO TEST step buttons
