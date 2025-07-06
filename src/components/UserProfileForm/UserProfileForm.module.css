@@ -80,3 +80,20 @@ button:hover {
   color: green;
   font-weight: 600;
 }
+
+.saveButton {
+  /* Default button styles */
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.disabled {
+  /* Styles for disabled button */
+  background-color: #d6d6d6; /* Light gray background */
+  color: #a1a1a1; /* Gray text */
+  cursor: not-allowed; /* Change cursor to indicate disabled state */
+}
