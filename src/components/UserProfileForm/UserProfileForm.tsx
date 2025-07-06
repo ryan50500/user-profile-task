@@ -1,30 +1,21 @@
 import React, { useEffect } from 'react';
 import styles from './UserProfileForm.module.css';
-import { useUserProfile } from './context/UserProfileContext';
+import { useUserProfile, UserProfileState } from './context/UserProfileContext';
 import FormStep from './FormStep';
 import FormStepper from './FormStepper';
 import FormSaveButton from './FormSaveButton';
 import FormSuccessMessage from './FormSuccessMessage';
 
-// Initial data for dirty check (simulate loaded data)
-const initialData = {
-  name: '',
-  email: '',
-  bio: '',
-  theme: 'light',
-  newsletter: false,
-};
-
 // Local form state type
 interface FormState {
-  validationErrors: Partial<typeof initialData>;
+  validationErrors: Partial<UserProfileState>;
   saving: boolean;
   success: boolean;
   step: number;
 }
 
 export type FormAction =
-  | { type: 'SET_VALIDATION_ERRORS'; payload: Partial<typeof initialData> }
+  | { type: 'SET_VALIDATION_ERRORS'; payload: Partial<UserProfileState> }
   | { type: 'SET_SAVING'; payload: boolean }
   | { type: 'SET_SUCCESS'; payload: boolean }
   | { type: 'SET_STEP'; payload: number }
@@ -54,39 +45,66 @@ function formReducer(state: FormState, action: FormAction): FormState {
   }
 }
 
-const validateForm = (state: typeof initialData) => {
-  // set a temporary error object to store validation errors
-  const temporaryErrors: Partial<typeof initialData> = {};
-  // add validation errors to the temporaryErrors object
+function validateForm(state: UserProfileState): Partial<UserProfileState> {
+  const temporaryErrors: Partial<UserProfileState> = {};
   if (!state.name.trim()) temporaryErrors.name = 'Name is required.';
   if (!state.email.trim()) temporaryErrors.email = 'Email is required.';
   else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(state.email)) temporaryErrors.email = 'Invalid email address.';
   if (!state.bio.trim()) temporaryErrors.bio = 'Bio is required.';
-  // return temporary error object
   return temporaryErrors;
+}
+
+// Added a reducer for managing fetch-related state
+
+// Fetch state type
+interface FetchState {
+  loadedData: UserProfileState | null;
+  loading: boolean;
+  fetchError: string | null;
+}
+
+// Fetch action type
+type FetchAction =
+  | { type: 'SET_LOADED_DATA'; payload: UserProfileState | null }
+  | { type: 'SET_LOADING'; payload: boolean }
+  | { type: 'SET_FETCH_ERROR'; payload: string | null };
+
+const initialFetchState: FetchState = {
+  loadedData: null,
+  loading: true,
+  fetchError: null,
 };
 
+function fetchReducer(state: FetchState, action: FetchAction): FetchState {
+  switch (action.type) {
+    case 'SET_LOADED_DATA':
+      return { ...state, loadedData: action.payload };
+    case 'SET_LOADING':
+      return { ...state, loading: action.payload };
+    case 'SET_FETCH_ERROR':
+      return { ...state, fetchError: action.payload };
+    default:
+      return state;
+  }
+}
+
 const UserProfileForm: React.FC = () => {
-  const { state, dispatch } = useUserProfile();
-  // is initialFormState coming from the state in formReducer??? and what exactly is the state in formReducer reffering to???
-  // is initialFormState coming from the state in formReducer??? and what exactly is the state in formReducer reffering to???
-  // is initialFormState coming from the state in formReducer??? and what exactly is the state in formReducer reffering to???
+  const { state, dispatch } = useUserProfile(); // `state` here refers to the global context state
   const [formState, dispatchForm] = React.useReducer(formReducer, initialFormState);
-  const [loadedData, setLoadedData] = React.useState<typeof initialData | null>(null);
-  const [loading, setLoading] = React.useState(true);
-  const [fetchError, setFetchError] = React.useState<string | null>(null);
+  const [fetchState, dispatchFetch] = React.useReducer(fetchReducer, initialFetchState);
 
   // Fetch initial data from json-server
   useEffect(() => {
-    setLoading(true);
-    setFetchError(null);
+    dispatchFetch({ type: 'SET_LOADING', payload: true });
+    dispatchFetch({ type: 'SET_FETCH_ERROR', payload: null });
     fetch('http://localhost:3001/userProfile')
       .then(res => {
         if (!res.ok) throw new Error('Failed to fetch user profile');
         return res.json();
       })
       .then(data => {
-        setLoadedData(data);
+        dispatchFetch({ type: 'SET_LOADED_DATA', payload: data });
+        dispatchFetch({ type: 'SET_LOADING', payload: false });
         // Set context/global state to loaded data (type-safe)
         if (typeof data.name === 'string') {
           dispatch({ type: 'SET_NAME', payload: data.name });
@@ -103,23 +121,30 @@ const UserProfileForm: React.FC = () => {
         if (typeof data.newsletter === 'boolean') {
           dispatch({ type: 'SET_NEWSLETTER', payload: data.newsletter });
         }
-        setLoading(false);
       })
       .catch(err => {
-        setFetchError(err.message);
-        setLoading(false);
+        dispatchFetch({ type: 'SET_FETCH_ERROR', payload: err.message });
+        dispatchFetch({ type: 'SET_LOADING', payload: false });
       });
   }, [dispatch]);
 
   // Validation
   useEffect(() => {
-    dispatchForm({ type: 'SET_VALIDATION_ERRORS', payload: validateForm(state) });
+    dispatchForm({ type: 'SET_VALIDATION_ERRORS', payload: validateForm(state) }); // `state` is from the global context
     dispatchForm({ type: 'SET_SUCCESS', payload: false });
   }, [state]);
 
+  // Refactored `dirty` and `isValid` into if-else statements for clarity
 
-  const dirty = loadedData ? JSON.stringify(state) !== JSON.stringify(loadedData) : false;
-  const isValid = Object.keys(formState.validationErrors).length === 0;
+  let dirty = false;
+  if (fetchState.loadedData) {
+    dirty = JSON.stringify(state) !== JSON.stringify(fetchState.loadedData); // `state` is from the global context
+  }
+
+  let isValid = false;
+  if (Object.keys(formState.validationErrors).length === 0) {
+    isValid = true; // No validation errors
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -131,13 +156,13 @@ const UserProfileForm: React.FC = () => {
     }, 1500);
   };
 
-  if (loading) return <div>Loading...</div>;
-  if (fetchError) return <div style={{ color: 'red' }}>{fetchError}</div>;
+  if (fetchState.loading) return <div>Loading...</div>;
+  if (fetchState.fetchError) return <div style={{ color: 'red' }}>{fetchState.fetchError}</div>;
 
   return (
     <form className={styles.form} onSubmit={handleSubmit} noValidate>
       <FormStep step={formState.step} validationErrors={formState.validationErrors} />
-      <FormStepper step={formState.step} dispatchForm={dispatchForm} />
+      {/* <FormStepper step={formState.step} dispatchForm={dispatchForm} /> */}
       <FormSaveButton isValid={isValid} dirty={dirty} saving={formState.saving} />
       <FormSuccessMessage show={formState.success} />
     </form>
