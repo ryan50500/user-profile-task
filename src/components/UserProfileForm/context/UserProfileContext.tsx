@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useReducer, ReactNode } from 'react';
 
 // State type
-type UserProfileState = {
+export type UserProfileState = {
   name: string;
   email: string;
   bio: string;
