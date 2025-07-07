@@ -63,6 +63,7 @@ This project is a Vite + React + TypeScript starter for the User Profile Setting
 ### Observations
 
 - For this form application, the re-render times are well within acceptable limits, ranging from 0.2ms to 0.6ms per component. Additionally, there are no expensive calculations or complex DOM updates, making the use of a provider to wrap the application a non-issue.
+- Since we are not making real API calls on form save, debounce or throttling is not needed at this stage.
 
 
 ### Assumptions
