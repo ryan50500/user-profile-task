@@ -60,6 +60,10 @@ This project is a Vite + React + TypeScript starter for the User Profile Setting
 
 - **Form State Management**: I am quite rusty with Context API, but I attempted to use it to align with Choreograph's frontend practices. However, I believe Redux would be better suited for this application due to its ability to centralize state management across the entire app. Redux Toolkit, for example, provides useful features like slices and selectors, which simplify state updates. Redux DevTools also makes debugging and tracking state changes much easier, especially in complex applications with multiple components relying on shared state.
 
+### Observations
+
+- For this form application, the re-render times are well within acceptable limits, ranging from 0.2ms to 0.6ms per component. Additionally, there are no expensive calculations or complex DOM updates, making the use of a provider to wrap the application a non-issue.
+
 
 ### Assumptions
 
