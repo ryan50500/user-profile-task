@@ -66,16 +66,16 @@ const UserProfileForm: React.FC = (): React.ReactElement => {
   return (
     <form className={styles.form} onSubmit={handleSubmit} noValidate>
       <FormStep step={formState.step} validationErrors={formState.validationErrors} />
-      <FormSuccessMessage show={formState.success && !fetchState.fetchError} />
+      <FormSuccessMessage show={formState.success && !fetchState.fetchError && isFormDirty} />
       <FormFailedMessage show={!!fetchState.fetchError} />
-      <FormSaveButton isValid={isFormValid} isDirty={isFormDirty} saving={formState.saving} />
-      {isFormDirty && (
+      <div className={styles.buttonGroup}>
+        <FormSaveButton isValid={isFormValid} isDirty={isFormDirty} saving={formState.saving} />
         <CancelButton
           isFormDirty={isFormDirty}
           loadedData={fetchState.loadedData}
           dispatch={dispatch}
         />
-      )}
+      </div>
     </form>
   );
 };

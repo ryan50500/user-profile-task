@@ -13,7 +13,8 @@ export type FormAction =
   | { type: 'SET_SAVING'; payload: boolean } 
   | { type: 'SET_SUCCESS'; payload: boolean } 
   | { type: 'SET_STEP'; payload: number } 
-  | { type: 'RESET_FORM' }; 
+  | { type: 'RESET_FORM' }
+  | { type: 'RESET_USER_PROFILE'; payload: UserProfileState }; // Action to reset user profile
 
 // Initial state for the form
 export const initialFormState: FormState = {
@@ -32,11 +33,20 @@ export function formReducer(state: FormState, action: FormAction): FormState {
     case 'SET_SAVING':
       return { ...state, saving: action.payload };
     case 'SET_SUCCESS':
-      return { ...state, success: action.payload };
+      return {
+        ...state,
+        success: action.payload, // Update the success state
+      };
     case 'SET_STEP':
       return { ...state, step: action.payload };
     case 'RESET_FORM':
       return { ...initialFormState }; // Reset to initial state
+    case 'RESET_USER_PROFILE':
+      return {
+        ...state,
+        validationErrors: {}, // Clear validation errors
+        ...action.payload, // Spread the payload to reset the user profile state
+      };
     default:
       return state;
   }

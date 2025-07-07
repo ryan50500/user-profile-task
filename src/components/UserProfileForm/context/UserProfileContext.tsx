@@ -15,7 +15,9 @@ export type UserProfileAction =
   | { type: 'SET_EMAIL'; payload: string } 
   | { type: 'SET_BIO'; payload: string } 
   | { type: 'SET_THEME'; payload: string } 
-  | { type: 'SET_NEWSLETTER'; payload: boolean };
+  | { type: 'SET_NEWSLETTER'; payload: boolean }
+  | { type: 'RESET_USER_PROFILE'; payload: UserProfileState } // Added RESET_USER_PROFILE action type
+  | { type: 'SET_SUCCESS'; payload: boolean }; // Added SET_SUCCESS action type
 
 
 // Default User Profile state on page load
@@ -40,6 +42,8 @@ function userProfileReducer(state: UserProfileState, action: UserProfileAction):
       return { ...state, theme: action.payload };
     case 'SET_NEWSLETTER':
       return { ...state, newsletter: action.payload }; 
+    case 'RESET_USER_PROFILE':
+      return { ...initialState }; // Reset state to initial values
     default:
       return state; // Return current state if action type is unrecognized
   }

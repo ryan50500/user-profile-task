@@ -96,4 +96,15 @@ button:hover {
   background-color: #d6d6d6; /* Light gray background */
   color: #a1a1a1; /* Gray text */
   cursor: not-allowed; /* Change cursor to indicate disabled state */
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+button.cancelButton {
+  background: #f44336; /* Red background */
+  color: #fff; /* White text */
+}
+
+button.cancelButton:hover {
+  background: #d32f2f; /* Darker red on hover */
 }
