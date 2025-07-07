@@ -13,7 +13,6 @@ export const isFormValid = (formState: FormState): boolean => {
   return Object.keys(formState.validationErrors).length === 0;
 };
 
-// Custom hook to encapsulate form helper logic
 // - Provides `isFormDirty` and `isFormValid` as calculated values based on the current state
 export const useFormHelpers = (
   userProfileState: UserProfileState,

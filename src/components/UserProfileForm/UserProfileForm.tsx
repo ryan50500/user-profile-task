@@ -8,7 +8,7 @@ import FormFailedMessage from './FormFailedMessage';
 import { formReducer, initialFormState } from './reducers/formReducer';
 import { fetchReducer, initialFetchState } from './reducers/fetchReducer';
 import { useFetchUserProfile } from './hooks/useFetchUserProfile';
-import { useFormHelpers, resetFormFields } from './hooks/useFormHelpers';
+import { useFormHelpers } from './hooks/useFormHelpers';
 import { ValidateForm } from './ValidateForm';
 import CancelButton from './CancelButton';
 import LoadingIndicator from './LoadingIndicator';
@@ -23,6 +23,8 @@ const UserProfileForm: React.FC = (): React.ReactElement => {
   // Fetch user profile from API and update context + fetch state
   useFetchUserProfile(dispatchFetch, dispatch);
 
+  // dispatch form errors that ValidateForm() returns
+  // This will run whenever userProfileState changes
   React.useEffect(() => {
     const formErrors = ValidateForm(userProfileState);
     dispatchForm({ type: 'SET_VALIDATION_ERRORS', payload: formErrors });
