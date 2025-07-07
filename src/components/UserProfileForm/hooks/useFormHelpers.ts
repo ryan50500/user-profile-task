@@ -1,4 +1,4 @@
-import { UserProfileState } from '../context/UserProfileContext';
+import { UserProfileState, UserProfileAction } from '../context/UserProfileContext';
 import { FetchState } from '../reducers/fetchReducer';
 import { FormState } from '../reducers/formReducer';
 
@@ -26,4 +26,17 @@ export const useFormHelpers = (
   const isFormValid = Object.keys(formState.validationErrors).length === 0;
 
   return { isFormDirty, isFormValid };
+};
+
+export const resetFormFields = (
+  loadedData: UserProfileState | null,
+  dispatch: React.Dispatch<UserProfileAction>
+) => {
+  if (loadedData) {
+    dispatch({ type: 'SET_NAME', payload: loadedData.name });
+    dispatch({ type: 'SET_EMAIL', payload: loadedData.email });
+    dispatch({ type: 'SET_BIO', payload: loadedData.bio });
+    dispatch({ type: 'SET_THEME', payload: loadedData.theme });
+    dispatch({ type: 'SET_NEWSLETTER', payload: loadedData.newsletter });
+  }
 };

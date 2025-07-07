@@ -8,8 +8,11 @@ import FormFailedMessage from './FormFailedMessage';
 import { formReducer, initialFormState } from './reducers/formReducer';
 import { fetchReducer, initialFetchState } from './reducers/fetchReducer';
 import { useFetchUserProfile } from './hooks/useFetchUserProfile';
-import { useFormHelpers } from './hooks/useFormHelpers';
+import { useFormHelpers, resetFormFields } from './hooks/useFormHelpers';
 import { ValidateForm } from './ValidateForm';
+import CancelButton from './CancelButton';
+import LoadingIndicator from './LoadingIndicator';
+import FetchErrorMessage from './FetchErrorMessage';
 
 // Main User Profile form component
 const UserProfileForm: React.FC = (): React.ReactElement => {
@@ -48,8 +51,16 @@ const UserProfileForm: React.FC = (): React.ReactElement => {
   };
 
   // Show loading or error UI
-  if (fetchState.loading) return <div>Loading...</div>;
-  if (fetchState.fetchError) return <div style={{ color: 'red' }}>{fetchState.fetchError}</div>;
+  if (fetchState.loading) return <LoadingIndicator />;
+  if (fetchState.fetchError) {
+    return (
+      <FetchErrorMessage
+        errorMessage={fetchState.fetchError}
+        dispatchForm={dispatchForm}
+        dispatchFetch={dispatchFetch}
+      />
+    );
+  }
 
   // Render main form
   return (
@@ -58,6 +69,13 @@ const UserProfileForm: React.FC = (): React.ReactElement => {
       <FormSuccessMessage show={formState.success && !fetchState.fetchError} />
       <FormFailedMessage show={!!fetchState.fetchError} />
       <FormSaveButton isValid={isFormValid} isDirty={isFormDirty} saving={formState.saving} />
+      {isFormDirty && (
+        <CancelButton
+          isFormDirty={isFormDirty}
+          loadedData={fetchState.loadedData}
+          dispatch={dispatch}
+        />
+      )}
     </form>
   );
 };

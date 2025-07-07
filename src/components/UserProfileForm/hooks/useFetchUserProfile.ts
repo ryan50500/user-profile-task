@@ -15,7 +15,6 @@ export const useFetchUserProfile = (
     dispatchFetch({ type: 'SET_LOADING', payload: true });
     dispatchFetch({ type: 'SET_FETCH_ERROR', payload: null });
 
-
     fetch('http://localhost:3001/userProfile')
       .then(res => {
         if (!res.ok) {
@@ -24,7 +23,7 @@ export const useFetchUserProfile = (
         return res.json(); // Parse JSON response
       })
       .then(data => {
-        // Update fetch state with loaded data and set loading to false
+        // Update fetch state with loaded data from the json-server mock API and set loading to false
         dispatchFetch({ type: 'SET_LOADED_DATA', payload: data });
         dispatchFetch({ type: 'SET_LOADING', payload: false });
 
