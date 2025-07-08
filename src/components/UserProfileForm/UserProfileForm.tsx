@@ -1,16 +1,16 @@
 import React from 'react';
 import styles from './UserProfileForm.module.css';
 import { useUserProfile } from './context/UserProfileContext';
-import FormStep from './FormStep';
-import FormSaveButton from './FormSaveButton';
+import FormStep from './steps/FormStep';
+import FormSaveButton from './buttons/FormSaveButton';
 import FormSuccessMessage from './FormSuccessMessage';
 import { formReducer, initialFormState } from './reducers/formReducer';
 import { fetchReducer, initialFetchState } from './reducers/fetchReducer';
 import { useFetchUserProfile } from './hooks/useFetchUserProfile';
 import { useFormHelpers } from './hooks/useFormHelpers';
-import { ValidateForm } from './ValidateForm';
-import CancelButton from './CancelButton';
-import LoadingIndicator from './LoadingIndicator';
+import { ValidateForm } from './validation/ValidateForm';
+import CancelButton from './buttons/CancelButton';
+import LoadingIndicator from './loaders/LoadingIndicator';
 import FetchErrorMessage from './FetchErrorMessage';
 
 // Main User Profile form component
@@ -23,7 +23,6 @@ const UserProfileForm: React.FC = (): React.ReactElement => {
   useFetchUserProfile(dispatchFetch, dispatch);
 
   // dispatch form errors that ValidateForm() returns
-  // This will run whenever userProfileState changes
   React.useEffect(() => {
     const formErrors = ValidateForm(userProfileState);
     dispatchForm({ type: 'SET_VALIDATION_ERRORS', payload: formErrors });

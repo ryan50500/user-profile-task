@@ -5,4 +5,3 @@ const StepTwo: React.FC = () => {
 };
 
 export default StepTwo;
-

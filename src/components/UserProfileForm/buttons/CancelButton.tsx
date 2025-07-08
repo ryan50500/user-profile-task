@@ -1,7 +1,7 @@
 import React from 'react';
-import { UserProfileAction, UserProfileState } from './context/UserProfileContext';
+import { UserProfileAction, UserProfileState } from '../context/UserProfileContext';
 // Importing CSS module for styling the button group
-import styles from './UserProfileForm.module.css';
+import styles from '../UserProfileForm.module.css';
 
 interface CancelButtonProps {
   isFormDirty: boolean;
@@ -35,4 +35,3 @@ const CancelButton: React.FC<CancelButtonProps> = ({ isFormDirty, loadedData, di
 };
 
 export default CancelButton;
-

@@ -1,7 +1,7 @@
 import React from 'react';
 
 // Importing CSS module for styling the button group
-import styles from './UserProfileForm.module.css';
+import styles from '../UserProfileForm.module.css';
 
 interface FormSaveButtonProps {
   isValid: boolean; // True if the form passes validation
