@@ -1,10 +1,12 @@
 import React from 'react';
 import { UserProfileAction } from './context/UserProfileContext';
+import { FetchAction } from './reducers/fetchReducer';
+import { FormAction } from './reducers/formReducer';
 
 interface FetchErrorMessageProps {
   errorMessage: string;
-  dispatchForm: React.Dispatch<any>;
-  dispatchFetch: React.Dispatch<any>;
+  dispatchForm: React.Dispatch<FormAction>; // Use the specific type for formReducer actions
+  dispatchFetch: React.Dispatch<FetchAction>; // Use the specific type for fetchReducer actions
 }
 
 const FetchErrorMessage: React.FC<FetchErrorMessageProps> = ({ errorMessage, dispatchForm, dispatchFetch }) => {
@@ -15,7 +17,17 @@ const FetchErrorMessage: React.FC<FetchErrorMessageProps> = ({ errorMessage, dis
   };
 
   return (
-    <div style={{ color: 'red' }}>
+    <div
+      style={{
+        color: 'red',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+      role="alert" // Mark as an alert for screen readers
+      aria-live="polite" // Notify screen readers of dynamic changes
+    >
       {errorMessage}
       <button
         type="button"

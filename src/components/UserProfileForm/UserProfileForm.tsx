@@ -69,7 +69,7 @@ const UserProfileForm: React.FC = (): React.ReactElement => {
     <form className={styles.form} onSubmit={handleSubmit} noValidate>
       <FormStep step={formState.step} validationErrors={formState.validationErrors} />
       <FormSuccessMessage show={formState.success && !fetchState.fetchError && isFormDirty} />
-      <FormFailedMessage show={!!fetchState.fetchError} />
+      {/* <FormFailedMessage show={!!fetchState.fetchError} /> */}
       <div className={styles.buttonGroup}>
         <FormSaveButton isValid={isFormValid} isDirty={isFormDirty} saving={formState.saving} />
         <CancelButton

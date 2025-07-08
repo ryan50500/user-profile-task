@@ -6,9 +6,10 @@ import styles from '../UserProfileForm.module.css';
 const ReceiveNewsletterField: React.FC = () => {
   const { state, dispatch } = useUserProfile();
   return (
-   <label className={styles.newsletterLabel}>
+    <label htmlFor="receive-newsletter" className={styles.newsletterLabel}>
       <input
         type="checkbox"
+        id="receive-newsletter"
         checked={state.newsletter}
         onChange={e => dispatch({ type: 'SET_NEWSLETTER', payload: e.target.checked })}
       />

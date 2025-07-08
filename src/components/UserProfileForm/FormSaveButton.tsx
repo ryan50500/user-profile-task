@@ -20,6 +20,8 @@ const FormSaveButton: React.FC<FormSaveButtonProps> = ({ isValid, isDirty, savin
                                           // - There are no unsaved changes (!isDirty)
                                           // - The form is currently saving (saving)
                                           // - The form is invalid (!isValid)
+        aria-disabled={!isDirty || saving || !isValid} // Ensure screen readers recognize the disabled state
+        aria-live="polite" // Notify screen readers of dynamic text changes
         className={`${styles.saveButton} ${(!isDirty || saving || !isValid) ? styles.disabled : ''}`} // Apply disabled styles conditionally
       >
         {saving ? 'Saving...' : 'Save Changes'} 
