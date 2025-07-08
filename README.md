@@ -43,7 +43,7 @@ This project is a Vite + React + TypeScript starter for the User Profile Setting
 
 1. **Interacting with the Form**:
    - Fill out the form fields and navigate between steps using the stepper.
-   - Submit the form to save changes. Note that there is a 20% chance of simulated failure.
+   - Submit the form to save changes. Note that there is a 40% chance of simulated failure.
    - If the form is dirty, the "Cancel" button will reset the fields to the original data from json-server.
 
 2. **Error Handling**:

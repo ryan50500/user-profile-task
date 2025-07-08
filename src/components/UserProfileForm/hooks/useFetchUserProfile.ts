@@ -5,7 +5,7 @@ import { FetchAction } from '../reducers/fetchReducer';
 // Custom hook to fetch user profile data and update state
 // - Manages fetch state (loading, error, loaded data)
 // - Updates global user profile state with fetched data
-// - Simulates a random error 20% of the time
+// - Simulates a random error 40% of the time
 export const useFetchUserProfile = (
   dispatchFetch: React.Dispatch<FetchAction>, // Dispatch function for fetch state
   dispatchUserProfile: React.Dispatch<UserProfileAction> // Dispatch function for user profile state

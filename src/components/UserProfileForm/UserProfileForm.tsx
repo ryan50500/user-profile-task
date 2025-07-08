@@ -4,7 +4,6 @@ import { useUserProfile } from './context/UserProfileContext';
 import FormStep from './FormStep';
 import FormSaveButton from './FormSaveButton';
 import FormSuccessMessage from './FormSuccessMessage';
-import FormFailedMessage from './FormFailedMessage';
 import { formReducer, initialFormState } from './reducers/formReducer';
 import { fetchReducer, initialFetchState } from './reducers/fetchReducer';
 import { useFetchUserProfile } from './hooks/useFetchUserProfile';
@@ -34,12 +33,12 @@ const UserProfileForm: React.FC = (): React.ReactElement => {
   // Helpers to check if form has been changed and is valid
   const { isFormDirty, isFormValid } = useFormHelpers(userProfileState, fetchState, formState);
 
-  // Submit handler: simulate save and optionally fail 20% of the time
+  // Submit handler: simulate save and optionally fail 40% of the time
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!isFormValid || !isFormDirty) return;
     dispatchForm({ type: 'SET_SAVING', payload: true });
-    const shouldFail = Math.random() < 0.2;
+    const shouldFail = Math.random() <= 0.4;
     if (shouldFail) {
       dispatchForm({ type: 'SET_SAVING', payload: false });
       dispatchForm({ type: 'SET_SUCCESS', payload: false });
@@ -69,7 +68,6 @@ const UserProfileForm: React.FC = (): React.ReactElement => {
     <form className={styles.form} onSubmit={handleSubmit} noValidate>
       <FormStep step={formState.step} validationErrors={formState.validationErrors} />
       <FormSuccessMessage show={formState.success && !fetchState.fetchError && isFormDirty} />
-      {/* <FormFailedMessage show={!!fetchState.fetchError} /> */}
       <div className={styles.buttonGroup}>
         <FormSaveButton isValid={isFormValid} isDirty={isFormDirty} saving={formState.saving} />
         <CancelButton
