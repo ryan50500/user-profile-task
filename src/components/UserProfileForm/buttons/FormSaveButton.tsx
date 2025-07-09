@@ -8,22 +8,23 @@ interface FormSaveButtonProps {
   saving: boolean; // True if the form is in the process of saving
 }
 
-// FormSaveButton component renders a button for saving form changes
-// The button is disabled if the form is invalid, has no unsaved changes, or is currently saving
 const FormSaveButton: React.FC<FormSaveButtonProps> = ({ isValid, isDirty, saving }) => {
   return (
     <div>
       <button
         type="submit"
-        disabled={!isDirty || saving || !isValid} // The button is disabled if:
-                                          // - There are no unsaved changes (!isDirty)
-                                          // - The form is currently saving (saving)
-                                          // - The form is invalid (!isValid)
+        /*
+          The button is disabled if:
+          - There are no unsaved changes (!isDirty)
+          - The form is currently saving (saving)
+          - The form is invalid (!isValid)
+        */
+        disabled={!isDirty || saving || !isValid}
         className={
           `${baseStyles.buttonBase} ${styles.saveButton} ${(!isDirty || saving || !isValid) ? baseStyles.disabled : ''}`
-        } 
+        }
       >
-        {saving ? 'Saving...' : 'Save Changes'} 
+        {saving ? 'Saving...' : 'Save Changes'}
       </button>
     </div>
   );

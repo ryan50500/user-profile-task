@@ -1,25 +1,26 @@
-.buttonBase {
-  border: none;
-  padding: 12px 20px;
-  border-radius: 5px;
-  cursor: pointer;
-  color: #fff;
-}
-
-.backButton {
-  margin-top: 2em;
-    border: none;
-    padding: 12px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    background-color: grey;
-    color: #fff;
-}
-
 .disabled {
   background-color: #d6d6d6;
   color: #a1a1a1;
   cursor: not-allowed;
   opacity: 0.5;
   pointer-events: none;
+}
+
+.buttonBase {
+  border: none;
+  padding: 12px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  color: #fff;
+  border-radius: 5px;
+}
+
+.backButton {
+    margin-top: 2em;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: grey;
+    color: #fff;
 }

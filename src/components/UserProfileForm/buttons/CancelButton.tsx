@@ -26,7 +26,7 @@ const CancelButton: React.FC<CancelButtonProps> = ({ isFormDirty, loadedData, di
       type="button"
       onClick={handleCancel}
       disabled={!isFormDirty}
-      className={`${!isFormDirty ? baseStyles.disabled : ''} ${styles.cancelButton}`}  >
+      className={`${!isFormDirty ? baseStyles.disabled : ''} ${baseStyles.buttonBase} ${styles.cancelButton}`}  >
       Cancel
     </button>
   );
