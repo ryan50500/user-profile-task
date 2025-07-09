@@ -2,16 +2,6 @@ import { UserProfileState, UserProfileAction } from '../context/UserProfileConte
 import { FetchState } from '../reducers/fetchReducer';
 import { FormState } from '../reducers/formReducer';
 
-export const isFormDirty = (
-  userProfileState: UserProfileState,
-  fetchState: FetchState
-): boolean => {
-  return !!fetchState.loadedData && JSON.stringify(userProfileState) !== JSON.stringify(fetchState.loadedData);
-};
-
-export const isFormValid = (formState: FormState): boolean => {
-  return Object.keys(formState.validationErrors).length === 0;
-};
 
 // - Provides `isFormDirty` and `isFormValid` as calculated values based on the current state
 export const useFormHelpers = (
