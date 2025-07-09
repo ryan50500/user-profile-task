@@ -41,7 +41,7 @@ const UserProfileForm: React.FC = (): React.ReactElement => {
     if (shouldFail) {
       dispatchForm({ type: 'SET_SAVING', payload: false });
       dispatchForm({ type: 'SET_SUCCESS', payload: false });
-      dispatchFetch({ type: 'SET_FETCH_ERROR', payload: 'Failed to update profile. Please try again.' });
+      dispatchFetch({ type: 'SET_FETCH_ERROR', payload: 'Failed to update profile. Please click back and try again.' });
       return;
     }
     setTimeout(() => {

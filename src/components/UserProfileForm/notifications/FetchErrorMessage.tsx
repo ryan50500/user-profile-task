@@ -1,7 +1,8 @@
 import React from 'react';
-import { UserProfileAction } from '../context/UserProfileContext';
 import { FetchAction } from '../reducers/fetchReducer';
 import { FormAction } from '../reducers/formReducer';
+import styles from '../buttons/ButtonBase.module.css';
+
 
 interface FetchErrorMessageProps {
   errorMessage: string;
@@ -32,7 +33,7 @@ const FetchErrorMessage: React.FC<FetchErrorMessageProps> = ({ errorMessage, dis
       <button
         type="button"
         onClick={handleBack}
-        style={{ marginTop: '1rem' }}
+        className={`${styles.backButton}`}
       >
         Back
       </button>
