@@ -3,7 +3,7 @@ import styles from './UserProfileForm.module.css';
 import { useUserProfile } from './context/UserProfileContext';
 import FormStep from './steps/FormStep';
 import FormSaveButton from './buttons/FormSaveButton';
-import FormSuccessMessage from './FormSuccessMessage';
+import FormSuccessMessage from './notifications/FormSuccessMessage';
 import { formReducer, initialFormState } from './reducers/formReducer';
 import { fetchReducer, initialFetchState } from './reducers/fetchReducer';
 import { useFetchUserProfile } from './hooks/useFetchUserProfile';
@@ -11,7 +11,7 @@ import { useFormHelpers } from './hooks/useFormHelpers';
 import { ValidateForm } from './validation/ValidateForm';
 import CancelButton from './buttons/CancelButton';
 import LoadingIndicator from './loaders/LoadingIndicator';
-import FetchErrorMessage from './FetchErrorMessage';
+import FetchErrorMessage from './notifications/FetchErrorMessage';
 
 // Main User Profile form component
 const UserProfileForm: React.FC = (): React.ReactElement => {

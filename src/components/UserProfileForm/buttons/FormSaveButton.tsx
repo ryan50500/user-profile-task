@@ -1,7 +1,6 @@
 import React from 'react';
-
-// Importing CSS module for styling the button group
-import styles from '../UserProfileForm.module.css';
+import baseStyles from './ButtonBase.module.css';
+import styles from './FormSaveButton.module.css';
 
 interface FormSaveButtonProps {
   isValid: boolean; // True if the form passes validation
@@ -13,7 +12,7 @@ interface FormSaveButtonProps {
 // The button is disabled if the form is invalid, has no unsaved changes, or is currently saving
 const FormSaveButton: React.FC<FormSaveButtonProps> = ({ isValid, isDirty, saving }) => {
   return (
-    <div className={styles.buttonGroup}>
+    <div>
       <button
         type="submit"
         disabled={!isDirty || saving || !isValid} // The button is disabled if:
@@ -22,7 +21,9 @@ const FormSaveButton: React.FC<FormSaveButtonProps> = ({ isValid, isDirty, savin
                                           // - The form is invalid (!isValid)
         aria-disabled={!isDirty || saving || !isValid} // Ensure screen readers recognize the disabled state
         aria-live="polite" // Notify screen readers of dynamic text changes
-        className={`${styles.saveButton} ${(!isDirty || saving || !isValid) ? styles.disabled : ''}`} // Apply disabled styles conditionally
+        className={
+          `${baseStyles.buttonBase} ${styles.saveButton} ${(!isDirty || saving || !isValid) ? baseStyles.disabled : ''}`
+        } // Apply base, save-specific, and disabled styles conditionally
       >
         {saving ? 'Saving...' : 'Save Changes'} 
       </button>
