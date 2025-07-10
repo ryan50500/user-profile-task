@@ -72,6 +72,9 @@ This project is a Vite + React + TypeScript starter for the User Profile Setting
 - The "Cancel" button resets the form to the original server data, assuming the data is fetched successfully on load.
 - The "Back" button on error resets both fetch and form states to allow retrying the operation.
 
-
 ---
+
+#### Handling Asynchronous Fetch Cleanup
+
+To ensure that no state updates happen on unmounted components, the `useFetchUserProfile` hook implements `AbortController`. This avoids potential memory leaks when the component unmounts during fetch.
 
