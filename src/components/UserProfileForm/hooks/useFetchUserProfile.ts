@@ -11,11 +11,15 @@ export const useFetchUserProfile = (
   dispatchUserProfile: React.Dispatch<UserProfileAction> // Dispatch function for user profile state
 ) => {
   useEffect(() => {
+    // Create an AbortController instance
+    const controller = new AbortController();
+    const { signal } = controller;
+
     // Set loading state to true and clear any previous errors
     dispatchFetch({ type: 'SET_LOADING', payload: true });
     dispatchFetch({ type: 'SET_FETCH_ERROR', payload: null });
 
-    fetch('http://localhost:3001/userProfile')
+    fetch('http://localhost:3001/userProfile', { signal })
       .then(res => {
         if (!res.ok) {
           throw new Error('Failed to fetch user profile');
@@ -45,9 +49,18 @@ export const useFetchUserProfile = (
         }
       })
       .catch(err => {
+        if (err.name === 'AbortError') {
+          console.log('Fetch aborted');
+          return; // Ignore abort errors
+        }
         // Handle fetch errors and update fetch state
         dispatchFetch({ type: 'SET_FETCH_ERROR', payload: err.message });
         dispatchFetch({ type: 'SET_LOADING', payload: false });
       });
-  }, [dispatchFetch, dispatchUserProfile]); // Dependencies ensure effect runs when dispatch functions change
+
+    // Cleanup function to abort fetch on unmount
+    return () => {
+      controller.abort();
+    };
+  }, [dispatchFetch, dispatchUserProfile]); 
 };
