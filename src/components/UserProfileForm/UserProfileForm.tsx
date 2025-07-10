@@ -30,7 +30,9 @@ const UserProfileForm: React.FC = (): React.ReactElement => {
   }, [userProfileState]);
 
   // Helpers to check if form has been changed and is valid
+  console.time('useFormHelpers');
   const { isFormDirty, isFormValid } = useFormHelpers(userProfileState, fetchState, formState);
+  console.timeEnd('useFormHelpers');
 
   // Submit handler: simulate save and optionally fail 40% of the time
   const handleSubmit = (e: React.FormEvent) => {

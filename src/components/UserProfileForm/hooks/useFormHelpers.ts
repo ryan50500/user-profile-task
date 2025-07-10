@@ -29,3 +29,4 @@ export const resetFormFields = (
     dispatch({ type: 'SET_NEWSLETTER', payload: loadedData.newsletter });
   }
 };
+
